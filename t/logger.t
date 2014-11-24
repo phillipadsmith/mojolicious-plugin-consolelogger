@@ -3,7 +3,7 @@ use Test::Mojo;
 
 # Make sure sockets are working
 plan skip_all => 'working sockets required for this test!'
-  unless Mojo::IOLoop->new->generate_port;    # Test server
+  unless Mojo::IOLoop::Server->generate_port;    # Test server
 
 use Mojolicious::Lite;
 
@@ -32,7 +32,7 @@ get '/:template' => sub {
 my $t = Test::Mojo->new;
 
 # Script tag in dynamic content
-$t->get_ok($_)->status_is(200)->element_exists('script')
+$t->get_ok($_)->element_exists('script')
   ->content_like(
   qr/console\.group\("info"\);\s*console\.log\("info"\);\s*console\.groupEnd\("info"\);/
   )
@@ -66,7 +66,7 @@ $t->get_ok($_)->status_is(200)->element_exists('script')
   for qw| /normal /exception |;
 
 # No script tag in static content
-$t->get_ok('/js/prettify.js')->status_is(200)->element_exists(':not(script)');
+$t->get_ok('/mojo/jquery/jquery.js')->status_is(200)->element_exists(':not(script)');
 
 done_testing;
 __DATA__
